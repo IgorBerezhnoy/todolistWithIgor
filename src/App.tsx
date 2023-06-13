@@ -7,17 +7,34 @@ export type FilterValuesType = 'all' | 'active' | 'completed';
 
 function App() {
 
-    let [tasks, setTasks] = useState([
+    let [tasks, setTasks] = useState<TaskType[]>([
         {id: v1(), title: 'HTML&CSS', isDone: true},
         {id: v1(), title: 'JS', isDone: true},
         {id: v1(), title: 'ReactJS', isDone: false},
         {id: v1(), title: 'Rest API', isDone: false},
         {id: v1(), title: 'GraphQL', isDone: false},
     ]);
+    const changeIsDone = (newId: string, newIsDone: boolean) => {
+        setTasks(tasks.map(el => el.id === newId ? {...el, isDone: newIsDone} : el));
+
+        /*  let currentTask = tasks.find(el => el.id === id);
+        if (currentTask) {
+            currentTask.isDone = isDone;
+        }
+        setTasks([...tasks]);*/
+
+
+    };
 
     function removeTask(id: string) {
-        let filteredTasks = tasks.filter(t => t.id !== id);
+        let filteredTasks = tasks.filter(t => t.id != id);
         setTasks(filteredTasks);
+    }
+
+    function addTask(title: string) {
+        let task = {id: v1(), title: title, isDone: false};
+        let newTasks = [task, ...tasks];
+        setTasks(newTasks);
     }
 
     let [filter, setFilter] = useState<FilterValuesType>('all');
@@ -25,21 +42,16 @@ function App() {
     let tasksForTodolist = tasks;
 
     if (filter === 'active') {
-        tasksForTodolist = tasks.filter(t => !t.isDone);
+        tasksForTodolist = tasks.filter(t => t.isDone === false);
     }
     if (filter === 'completed') {
-        tasksForTodolist = tasks.filter(t => t.isDone);
+        tasksForTodolist = tasks.filter(t => t.isDone === true);
     }
 
     function changeFilter(value: FilterValuesType) {
         setFilter(value);
     }
 
-    function addTasks(tittle: string) {
-        let newTask: TaskType = {id: v1(), title: tittle, isDone: false};
-        setTasks([newTask, ...tasks]);
-
-    }
 
     return (
         <div className="App">
@@ -47,7 +59,9 @@ function App() {
                       tasks={tasksForTodolist}
                       removeTask={removeTask}
                       changeFilter={changeFilter}
-                      addTasks={addTasks}/>
+                      addTask={addTask}
+                      changeIsDone={changeIsDone}
+                      filter={filter}/>
         </div>
     );
 }
