@@ -1,21 +1,18 @@
 import React, {ChangeEvent} from 'react';
-import {TaskType} from './Todolist';
 
-type PropsType={
-    type:string
-    onChange:(isDone:boolean)=>void
-
+type PropsType = {
+    type: string
+    checked: boolean
+    callBack:(isDone:boolean)=>void
 }
 
-
-
 export const Input = (props:PropsType) => {
-
-    const onChangeHandler=(e:ChangeEvent<HTMLInputElement>)=>{
-        props.onChange(e.currentTarget.checked)
-    }
+const onChange = (e:ChangeEvent<HTMLInputElement>) => {
+    props.callBack(e.currentTarget.checked)
+}
 
     return (
-        <input type={props.type} onChange={onChangeHandler}/>
+        <input type={props.type} checked={props.checked} onChange={onChange}/>
     );
 };
+
