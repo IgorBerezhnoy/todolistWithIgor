@@ -1,15 +1,15 @@
-.App {
+/*.App {
   padding: 30px;
   display: flex;
 }
 
 .App > div {
   margin-right: 50px;
-}
+}*/
 .todoList {
   border: 1px solid green;
   border-radius: 3px;
-  background-color: yellowgreen;
+  /*background-color: yellowgreen;*/
   padding: 20px;
 }
 .tasks-list {
@@ -46,9 +46,10 @@
   outline: none;
 }
 .AddItem{
-  max-height: 50px;
+  min-height: 50px;
   border: 1px solid green;
   border-radius: 3px;
-  background-color: yellowgreen;
+  /*background-color: yellowgreen;*/
   padding: 20px;
+  margin: 10px 0px;
 }

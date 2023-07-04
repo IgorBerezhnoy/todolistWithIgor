@@ -1,6 +1,8 @@
 import React, {ChangeEvent, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCirclePlus, faDeleteLeft, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {IconButton, TextField} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 type AddItemFormPropsType = {
@@ -40,15 +42,16 @@ export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
 
     return (
         <div>
-            <input
-                value={title}
-                onChange={changeItemTitle}
-                className={error ? 'user-error' : undefined}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        addItem();
-                    }
-                }}
+            <TextField size={'small'}
+                       variant={'standard'} placeholder={'Please'}
+                       value={title}
+                       onChange={changeItemTitle}
+                       className={error ? 'user-error' : undefined}
+                       onKeyDown={(e) => {
+                           if (e.key === 'Enter') {
+                               addItem();
+                           }
+                       }}
 
             />
             <button
@@ -62,11 +65,12 @@ export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
                 onClick={() => setTitle(title.slice(0, -1))}>
                 <FontAwesomeIcon icon={faDeleteLeft}/>
             </button>
-            <button
+            <IconButton
                 disabled={!title}
-                onClick={() => setTitle('')}>
-                <FontAwesomeIcon icon={faTrash}/>
-            </button>
+                size={"small"}   onClick={() => setTitle('')}>
+                <DeleteIcon/>
+            </IconButton>
+
             {isItemTitleLengthTooLong && <div>You task title is too long</div>}
             {error && <div style={{'color': 'red', 'fontWeight': 'bold'}}>Please, enter correct title</div>}
         </div>
