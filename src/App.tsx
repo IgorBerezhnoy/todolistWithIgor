@@ -21,7 +21,7 @@ import NightlightIcon from '@mui/icons-material/Nightlight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
-type TodolistType = {
+export type TodoListType = {
     title: string
     filter: FilterValuesType
     id: string
@@ -32,11 +32,10 @@ type TasksStateType = {
 
 function App(): JSX.Element {
 
-
     const todolistId1 = v1();
     const todolistId2 = v1();
 
-    const [todolist, setTodolist] = useState<Array<TodolistType>>(
+    const [todolist, setTodolist] = useState<Array<TodoListType>>(
         [
             {id: todolistId1, title: 'What to learn', filter: 'all'},
             {id: todolistId2, title: 'What to buy', filter: 'all'},
@@ -60,14 +59,14 @@ function App(): JSX.Element {
     const [isLightMode, setIsLightMode] = useState(true);
 
     const changeTodolistFilter = (nextFilterValue: FilterValuesType, todolistId: string) => {
-        const updatedTodolists: Array<TodolistType> =
+        const updatedTodolists: Array<TodoListType> =
             todolist.map(el => el.id === todolistId ? {...el, filter: nextFilterValue} : el);
         setTodolist(updatedTodolists);
 
     };
 
     const changeTodolistTitle = (title: string, todolistId: string) => {
-        const updatedTodolists: Array<TodolistType> =
+        const updatedTodolists: Array<TodoListType> =
             todolist.map(el => el.id === todolistId ? {...el, title} : el);
         setTodolist(updatedTodolists);
 
@@ -107,14 +106,14 @@ function App(): JSX.Element {
     };
 
     const removeTodolist = (todoId: string) => {
-        const updatedTodoLists: Array<TodolistType> = todolist.filter(tl => tl.id !== todoId);
+        const updatedTodoLists: Array<TodoListType> = todolist.filter(tl => tl.id !== todoId);
         setTodolist(updatedTodoLists);
         delete tasks[todoId];
     };
 
     const addTodolist = (title: string) => {
         const newTodoId = v1();
-        const newTodo: TodolistType = {
+        const newTodo: TodoListType = {
             id: newTodoId,
             title: title,
             filter: 'all'
@@ -185,9 +184,10 @@ function App(): JSX.Element {
                             TodoLists
                         </Typography>
                         <Button variant={'contained'} color={'secondary'}>LogOut</Button>
-                        <Button sx={{margin:"10px" }}
+                        <Button sx={{margin: '10px'}}
                                 variant={'contained'} color={'secondary'}
-                                onClick={() => setIsLightMode(!isLightMode)}>{isLightMode ? <NightlightIcon/> : <LightModeIcon/>}</Button>
+                                onClick={() => setIsLightMode(!isLightMode)}>{isLightMode ? <NightlightIcon/> :
+                            <LightModeIcon/>}</Button>
                     </Toolbar>
                 </AppBar>
                 <Container>

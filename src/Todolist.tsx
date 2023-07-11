@@ -6,6 +6,9 @@ import {faDeleteLeft} from '@fortawesome/free-solid-svg-icons';
 import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
+import {Button, Checkbox, IconButton} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 type TodoListPropsType = {
     idTodo: string
@@ -27,8 +30,6 @@ export type TaskType = {
     isDone: boolean
 }
 const TodoList: FC<TodoListPropsType> = (props) => {
-    // const [title, setTitle] = useState('');
-    // const [error, setError] = useState<boolean>(false);
 
     const tasksList = (props.tasks.length === 0)
         ? <p>TodoList is empty</p>
@@ -44,14 +45,16 @@ const TodoList: FC<TodoListPropsType> = (props) => {
                     return (
                         <li key={task.id} className={'tasks-list-item'}>
                             <div>
-                                <input
-                                    type="checkbox"
+                                <Checkbox
+size={"small"}
                                     checked={task.isDone}
                                     onChange={changeTaskStatus}
                                 />
                                 <span className={task.isDone ? 'task-done' : 'task'}><EditableSpan title={task.title} onChange={changeTasksTitle}/></span>
                             </div>
-                            <button onClick={removeTask}>x</button>
+                            <IconButton size={"small"} onClick={removeTask}>
+                                <DeleteIcon/>
+                            </IconButton>
                         </li>
                     );
                 })
@@ -60,72 +63,40 @@ const TodoList: FC<TodoListPropsType> = (props) => {
 
     const addTask = (title:string) => props.addTask(title, props.idTodo);
 
-
     const maxTaskTitleLength = 15;
-    // const isTaskTitleLengthTooLong = title.length > maxTaskTitleLength;
-    // const isAddTaskBtnDisabled = !title || isTaskTitleLengthTooLong;
-    // const changeTaskTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    //     if (error) {
-    //         setError(false);
-    //     }
-    //     if (!isTaskTitleLengthTooLong) {
-    //         setTitle(e.currentTarget.value);
-    //     }
-    // };
+
     const changeTodolistTitle = (title:string) => {
       props.changeTodolistTitle(title, props.idTodo)
     }
     return (
         <div className="todoList">
-            <h3 className={'todolist-header'}><EditableSpan title={props.title} onChange={changeTodolistTitle}/><span><button
-                onClick={() => props.removeTodolist(props.idTodo)}>x</button></span></h3>
+            <h3 className={'todolist-header'}><EditableSpan title={props.title} onChange={changeTodolistTitle}/><span>
+                                 <IconButton size={"small"} onClick={() => props.removeTodolist(props.idTodo)}>
+                                <DeleteIcon/>
+                            </IconButton>
+       </span></h3>
 
             <AddItemForm maxItemTitleLength={maxTaskTitleLength} addItem={addTask}/>
 
-            {/*<div>
-                <input
-                    value={title}
-                    onChange={changeTaskTitle}
-                    className={error ? 'user-error' : undefined}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            addTask();
-                        }
-                    }}
-                />
-                <button
-                    disabled={isAddTaskBtnDisabled}
-                    onClick={addTask}>
-                    <FontAwesomeIcon icon={faCirclePlus}/>
-                </button>
-
-                <button
-                    disabled={!title}
-                    onClick={() => setTitle(title.slice(0, -1))}>
-                    <FontAwesomeIcon icon={faDeleteLeft}/>
-                </button>
-                <button
-                    disabled={!title}
-                    onClick={() => setTitle('')}>
-                    <FontAwesomeIcon icon={faTrash}/>
-                </button>
-                {isTaskTitleLengthTooLong && <div>You task title is too long</div>}
-                {error && <div style={{'color': 'red', 'fontWeight': 'bold'}}>Please, enter correct title</div>}
-            </div>*/}
             {tasksList}
             <div className={'buttons-block'}>
-                <button
-                    className={props.filter === 'all' ? 'btn-filter-active' : undefined}
+                <Button variant={"contained"}
+                        size={"small"}
+                    color={props.filter === 'all' ? 'secondary' : "primary"}
                     onClick={() => props.changeFilter('all', props.idTodo)}>All
-                </button>
-                <button
-                    className={props.filter === 'active' ? 'btn-filter-active' : undefined}
+                </Button>
+                <Button
+                    variant={"contained"}
+                    size={"small"}
+                    className={props.filter === 'active' ? 'secondary' : "primary"}
                     onClick={() => props.changeFilter('active', props.idTodo)}>Active
-                </button>
-                <button
-                    className={props.filter === 'completed' ? 'btn-filter-active' : undefined}
+                </Button>
+                <Button
+                    variant={"contained"}
+                    size={"small"}
+                    className={props.filter === 'completed' ? 'secondary' : "primary"}
                     onClick={() => props.changeFilter('completed', props.idTodo)}>Completed
-                </button>
+                </Button>
             </div>
         </div>
     );
