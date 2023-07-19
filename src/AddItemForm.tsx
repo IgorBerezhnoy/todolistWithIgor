@@ -1,79 +1,49 @@
-import React, {ChangeEvent, useState} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCirclePlus, faDeleteLeft, faTrash} from '@fortawesome/free-solid-svg-icons';
-import {IconButton, TextField} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import {IconButton, TextField} from "@mui/material";
+import {AddBox} from "@mui/icons-material";
+
 
 
 type AddItemFormPropsType = {
-    maxItemTitleLength: number
-    addItem: (trimmedTitle: string) => void
+    addItem: (title: string) => void
 }
 
-export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
+export function AddItemForm(props: AddItemFormPropsType) {
 
-    const [title, setTitle] = useState('');
-    const [error, setError] = useState<boolean>(false);
-
-
-    const maxItemTitleLength = props.maxItemTitleLength;
-    const isItemTitleLengthTooLong = title.length > maxItemTitleLength;
-    const isAddItemBtnDisabled = !title || isItemTitleLengthTooLong;
-
-
-    const changeItemTitle = (e: ChangeEvent<HTMLInputElement>) => {
-        if (error) {
-            setError(false);
-        }
-        if (!isItemTitleLengthTooLong) {
-            setTitle(e.currentTarget.value);
-        }
-    };
+    let [title, setTitle] = useState("")
+    let [error, setError] = useState<string | null>(null)
 
     const addItem = () => {
-        const trimmedTitle = title.trim();
-        if (trimmedTitle) {
-            props.addItem(trimmedTitle);
+        if (title.trim() !== "") {
+            props.addItem(title);
+            setTitle("");
         } else {
-            setError(true);
+            setError("Title is required");
         }
-        setTitle('');
-    };
+    }
 
-    return (
-        <div>
-            <TextField size={'small'}
-                       variant={'standard'} placeholder={'Please'}
-                       value={title}
-                       onChange={changeItemTitle}
-                       className={error ? 'user-error' : undefined}
-                       onKeyDown={(e) => {
-                           if (e.key === 'Enter') {
-                               addItem();
-                           }
-                       }}
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.currentTarget.value)
+    }
 
-            />
-            <button
-                disabled={isAddItemBtnDisabled}
-                onClick={addItem}>
-                <FontAwesomeIcon icon={faCirclePlus}/>
-            </button>
+    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        setError(null);
+        if (e.charCode === 13) {
+            addItem();
+        }
+    }
 
-            <button
-                disabled={!title}
-                onClick={() => setTitle(title.slice(0, -1))}>
-                <FontAwesomeIcon icon={faDeleteLeft}/>
-            </button>
-            <IconButton
-                disabled={!title}
-                size={"small"}   onClick={() => setTitle('')}>
-                <DeleteIcon/>
-            </IconButton>
-
-            {isItemTitleLengthTooLong && <div>You task title is too long</div>}
-            {error && <div style={{'color': 'red', 'fontWeight': 'bold'}}>Please, enter correct title</div>}
-        </div>
-    );
-};
-
+    return <div>
+        <TextField variant="outlined"
+                   error={!!error}
+                   value={title}
+                   onChange={onChangeHandler}
+                   onKeyPress={onKeyPressHandler}
+                   label="Title"
+                   helperText={error}
+        />
+        <IconButton color="primary" onClick={addItem}>
+            <AddBox />
+        </IconButton>
+    </div>
+}
