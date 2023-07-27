@@ -26,7 +26,7 @@ export function Todolist1(props: PropsType) {
     let todolists = useSelector<AppRootStateType, TodolistType>(state => state.todolists.find(el => el.id === props.id) as TodolistType);
     const {id,title,filter}=todolists
 
-    const tasks = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[props.id]);
+    let tasks = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[props.id]);
 
 
     const dispatch=useDispatch()
@@ -48,6 +48,12 @@ export function Todolist1(props: PropsType) {
     const onActiveClickHandler = () =>dispatch(ChangeTodolistFilterAC(id,'active'))
     const onCompletedClickHandler = () =>dispatch(ChangeTodolistFilterAC(id,'completed'))
 
+    if (filter === "active") {
+        tasks = tasks.filter(t => t.isDone === false);
+    }
+    if (filter === "completed") {
+        tasks = tasks.filter(t => t.isDone === true);
+    }
     return <div>
         <h3><EditableSpan value={title} onChange={changeTodolistTitle}/>
             <IconButton onClick={removeTodolist}>
@@ -58,13 +64,13 @@ export function Todolist1(props: PropsType) {
         <div>
             {
               tasks.map(t => {
-                    const onClickHandler = () => dispatch(removeTaskAC(t.id,props.id))
+                    const onClickHandler = () => dispatch(removeTaskAC(t.id,id))
                     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
                         let newIsDoneValue = e.currentTarget.checked;
                         dispatch(changeTaskStatusAC(t.id, newIsDoneValue, props.id))
                     };
                     const onTitleChangeHandler = (newValue: string) => {
-                        dispatch(changeTaskTitleAC(t.id, newValue, props.id))
+                        dispatch(changeTaskTitleAC(t.id, newValue, id))
                     };
 
 
