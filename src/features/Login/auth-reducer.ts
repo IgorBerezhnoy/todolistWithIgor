@@ -1,66 +1,66 @@
 import {Dispatch} from 'redux';
-import {SetAppErrorActionType, setAppInitAC, setAppStatusAC, SetAppStatusActionType} from '../../app/app-reducer';
-import {authAPI} from '../../api/todolists-api';
-import {handleServerAppError, handleServerNetworkError} from '../../utils/error-utils';
-import {addTaskAC} from '../TodolistsList/tasks-reducer';
+import {SetAppErrorActionType, appActions, SetAppStatusActionType} from '../../app/app-reducer';
+import {authAPI, LoginParamsType} from '../../api/todolists-api';
+import {
+    handleServerAppError,
+    handleServerNetworkError,
+} from '../../utils/error-utils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {AppThunk} from '../../app/store';
 
-const initialState = {
-    isLoggedIn: false
-};
-type InitialStateType = typeof initialState
-
-export const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
-    switch (action.type) {
-        case 'login/SET-IS-LOGGED-IN':
-            return {...state, isLoggedIn: action.value};
-        default:
-            return state;
+export const slice = createSlice({
+    name: 'auth',
+    initialState: {
+        isLoggedIn: false,
+    },
+    reducers: {
+        setIsLoggedInAC: (state, action: PayloadAction<{ isLoggedIn: boolean }>) => {
+            state.isLoggedIn = action.payload.isLoggedIn;
+        }
     }
-};
-// actions
-export const setIsLoggedInAC = (value: boolean) =>
-    ({type: 'login/SET-IS-LOGGED-IN', value} as const);
+});
+
+export const authReducer = slice.reducer;
+export const authActions = slice.actions;
 
 // thunks
-export const loginTC = (data: FormikType) => async (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setAppStatusAC('loading'));
-    try {
-        const result = await authAPI.login(data);
-        if (result.data.resultCode === 0) {
-            dispatch(setIsLoggedInAC(true));
-        } else {
-            handleServerAppError(result.data, dispatch);
-        }
-
-    } catch (e) {
-        handleServerNetworkError(e as { message: string }, dispatch);
-    }
-    dispatch(setAppStatusAC('succeeded'));
-};
-export const meTC = () => async (dispatch: Dispatch<ActionsType | ReturnType<typeof setAppInitAC>>) => {
-
-    dispatch(setAppInitAC(true));
-    dispatch(setAppStatusAC('loading'));
-    try {
-        const result = await authAPI.me();
-        console.log(result);
-        if (result.data.resultCode === 0) {
-            dispatch(setIsLoggedInAC(true));
-        } else {
-            handleServerAppError(result.data, dispatch);
-        }
-
-    } catch (e) {
-        handleServerNetworkError(e as { message: string }, dispatch);
-    }
-    dispatch(setAppStatusAC('succeeded'));
-    dispatch(setAppInitAC(false))
+export const loginTC =
+    (data: LoginParamsType):AppThunk => (dispatch) => {
+        dispatch(appActions.setAppStatusAC({status:'loading'}));
+        authAPI
+            .login(data)
+            .then((res) => {
+                if (res.data.resultCode === 0) {
+                    dispatch(authActions.setIsLoggedInAC({isLoggedIn: true}));
+                    dispatch(appActions.setAppStatusAC({status:'succeeded'}));
+                } else {
+                    handleServerAppError(res.data, dispatch);
+                }
+            })
+            .catch((error) => {
+                handleServerNetworkError(error, dispatch);
+            });
+    };
+export const logoutTC = ():AppThunk => (dispatch) => {
+    dispatch(appActions.setAppStatusAC({status:'loading'}));
+    authAPI
+        .logout()
+        .then((res) => {
+            if (res.data.resultCode === 0) {
+                dispatch(authActions.setIsLoggedInAC({isLoggedIn: false}));
+                dispatch(appActions.setAppStatusAC({status:'succeeded'}));
+            } else {
+                handleServerAppError(res.data, dispatch);
+            }
+        })
+        .catch((error) => {
+            handleServerNetworkError(error, dispatch);
+        });
 };
 
 // types
-type ActionsType = ReturnType<typeof setIsLoggedInAC> | SetAppStatusActionType | SetAppErrorActionType
-export type FormikType = {
-    email: string
-    password: string
-    rememberMe: boolean
-}
+
+type ActionsType = ReturnType<typeof authActions.setIsLoggedInAC>;
+
+
+type ThunkDispatch = Dispatch<ActionsType | SetAppStatusActionType | SetAppErrorActionType>;
