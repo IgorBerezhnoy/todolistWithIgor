@@ -33,6 +33,7 @@ export const slice = createSlice({
             const index = tasksForCurrentTodolist.findIndex(task => task.id === action.payload.taskId);
             if (index !== -1) tasksForCurrentTodolist.splice(index, 1);
         },
+
         addTaskAC: (state, action: PayloadAction<{ task: TaskType }>) => {
             state[action.payload.task.todoListId].unshift(action.payload.task);
         },
@@ -54,7 +55,8 @@ export const slice = createSlice({
             })
             .addCase(todolistsActions.removeTodolistAC, (state, action) => {
                 delete state[action.payload.id];
-            }).addCase(todolistsActions.setTodolistsAC, (state, action) => {
+            })
+            .addCase(todolistsActions.setTodolistsAC, (state, action) => {
             action.payload.todolists.forEach((tl) => {
                 state[tl.id] = [];
             });
