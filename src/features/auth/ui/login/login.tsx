@@ -1,58 +1,21 @@
 import React from 'react';
-import {useFormik} from 'formik';
+import {FormikHelpers, useFormik} from 'formik';
 import {useSelector} from 'react-redux';
 import {Navigate} from 'react-router-dom';
 import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from '@mui/material';
-import {loginTC} from 'features/auth/auth.reducer';
-import {useAppDispatch} from 'common/hooks';
-import {selectIsLoggedIn} from 'features/auth/auth.selectors';
+import {useActions} from 'common/hooks';
+import {selectIsLoggedIn} from 'features/auth/model/auth.selectors';
+import {authThunks} from 'features/auth/model/auth.slice';
+import {LoginParamsType} from 'features/auth/api/auth.api';
+import {BaseResponseType} from 'common/types';
+import s from 'features/auth/ui/login/login.module.css';
+import {useLogin} from '../../lib/useLogin';
 
-type ErrorsType = {
-    email?: string | null
-    password?: string | null
-}
 
 export const Login = () => {
-    const dispatch = useAppDispatch();
-
     const isLoggedIn = useSelector(selectIsLoggedIn);
+    let formik = useLogin();
 
-    const formik = useFormik({
-        validate: (values) => {
-            const errors: ErrorsType = {};
-            if (!values.email) {
-                errors.email = 'Required';
-            } else if (
-                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-            ) {
-                errors.email = 'Invalid email address';
-            }
-            if (!values.password) {
-                errors.password = 'Required';
-            } else if (values.password.length <= 3) {
-                errors.password = 'Invalid password, too short  ';
-            }
-            return errors;
-        },
-        initialValues: {
-            email: '',
-            password: '',
-            rememberMe: false,
-        },
-        onSubmit: (values,formikHelpers) => {
-            dispatch(loginTC(values))
-                .unwrap()
-                .then(res => {
-
-                })
-                .catch(err => {
-                    // formik.setErrors()
-                    debugger
-                    formikHelpers.setFieldError(err.fieldsErrors[0].field, err.fieldsErrors[0].error);
-
-                });
-        },
-    });
 
     if (isLoggedIn) {
         return <Navigate to={'/'}/>;
@@ -66,7 +29,7 @@ export const Login = () => {
                         <FormLabel>
                             <p>
                                 To log in get registered{' '}
-                                <a href={'https://social-network.samuraijs.com/'} target={'_blank'}>
+                                <a href={'https://social-network.samuraijs.com/'} target={'_blank'} rel="noreferrer">
                                     here
                                 </a>
                             </p>
@@ -76,16 +39,23 @@ export const Login = () => {
                         </FormLabel>
                         <FormGroup>
                             <TextField label="Email" margin="normal" {...formik.getFieldProps('email')} />
-                            {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+                            {formik.touched.email && formik.errors.email &&
+                                <p className={s.error}>{formik.errors.email}</p>}
                             <TextField type="password" label="Password"
                                        margin="normal" {...formik.getFieldProps('password')} />
-                            {formik.errors.password ? <div>{formik.errors.password}</div> : null}
+                            {formik.touched.password && formik.errors.password &&
+                                <p className={s.error}>{formik.errors.password}</p>}
                             <FormControlLabel
                                 label={'Remember me'}
                                 control={<Checkbox {...formik.getFieldProps('rememberMe')}
                                                    checked={formik.values.rememberMe}/>}
                             />
-                            <Button type={'submit'} variant={'contained'} color={'primary'}>
+                            <Button
+                                type={'submit'}
+                                variant={'contained'}
+                                disabled={!(formik.isValid && formik.dirty)}
+                                color={'primary'}
+                            >
                                 Login
                             </Button>
                         </FormGroup>
