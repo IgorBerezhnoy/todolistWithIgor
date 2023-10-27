@@ -1,6 +1,6 @@
 import {AppDispatch, AppRootStateType} from 'app/store';
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {BaseResponseType} from '../types';
+import {BaseResponseType} from '../../../../../toDoListWithDimych/1-todolist/src/types';
 
 export const createAppAsyncThunk = createAsyncThunk.withTypes<{
   state: AppRootStateType;

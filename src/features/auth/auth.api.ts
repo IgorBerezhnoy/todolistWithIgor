@@ -1,5 +1,5 @@
 import { instance } from "common/api/common.api";
-import { BaseResponseType } from "common/types/common.types";
+import { BaseResponseType } from "../../../../../toDoListWithDimych/1-todolist/src/types/common.types";
 
 export const authAPI = {
   login(data: LoginParamsType) {

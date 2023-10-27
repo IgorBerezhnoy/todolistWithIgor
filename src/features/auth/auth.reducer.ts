@@ -3,7 +3,7 @@ import {appActions} from 'app/app.reducer';
 import {authAPI, LoginParamsType} from 'features/auth/auth.api';
 import {clearTasksAndTodolists} from 'common/actions';
 import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from 'common/utils';
-import {BaseResponseType} from '../../common/types';
+import {BaseResponseType} from '../../../../../toDoListWithDimych/1-todolist/src/types';
 
 const slice = createSlice({
   name: 'auth',

@@ -6,7 +6,7 @@ import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, G
 import {authThunk} from 'features/auth/auth.reducer';
 import {useAppDispatch} from 'common/hooks';
 import {selectIsLoggedIn} from 'features/auth/auth.selectors';
-import {BaseResponseType} from '../../common/types';
+import {BaseResponseType} from '../../../../../toDoListWithDimych/1-todolist/src/types';
 
 
 type FormValues = {

@@ -36,7 +36,7 @@ const slice = createSlice({
 export const appReducer = slice.reducer;
 export const appActions = slice.actions;
 
-export const initializeAppTC = createAppAsyncThunk<{ isInitialized: true }, undefined>('app/initializeAppTC', async (arg, thunkAPI) => {
+ const initializeAppTC = createAppAsyncThunk<{ isInitialized: true }, undefined>('app/initializeAppTC', async (arg, thunkAPI) => {
   let {dispatch, rejectWithValue} = thunkAPI;
   try {
     let res = await authAPI.me();
@@ -56,6 +56,8 @@ export const initializeAppTC = createAppAsyncThunk<{ isInitialized: true }, unde
     return {isInitialized: true};
   }
 });
+export const appThunks = {initializeAppTC};
+
 //   () => (dispatch: Dispatch) => {
 //   authAPI.me().then((res) => {
 //     if (res.data.resultCode === 0) {

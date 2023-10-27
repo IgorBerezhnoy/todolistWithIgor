@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import { appActions } from "app/app.reducer";
-import { BaseResponseType } from "common/types/common.types";
+import { BaseResponseType } from "../../../../../toDoListWithDimych/1-todolist/src/types/common.types";
 
 export const handleServerAppError = <D>(data: BaseResponseType<D>, dispatch: Dispatch, showError:boolean=true) => {
   if (showError){
